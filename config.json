@@ -1,6 +1,6 @@
 {
   "listen": {
-    "ip": "127.0.0.1",
+    "ip": "0.0.0.0",
     "port": 2222
   },
   "user": {
@@ -9,7 +9,7 @@
   },
   "ssh": {
     "host": null,
-    "port": 22,
+    "port": null,
     "term": "xterm-color",
     "readyTimeout": 20000
   },
@@ -23,7 +23,7 @@
     "secret": "mysecret"
   },
   "options": {
-    "challengeButton": true
+    "challengeButton": false
   },
   "algorithms": {
     "kex": [
@@ -55,10 +55,10 @@
     ]
   },
   "serverlog": {
-    "client": false, // proof-of-concept to log commands from client to server
+    "client": true, // proof-of-concept to log commands from client to server
     "server": false  // not yet implemented
   },
-  "accesslog": false, // http style access logging to console.log
+  "accesslog": true, // http style access logging to console.log
   "verify": false, // verification of host key hashes, see hostkeyhashes.json
   "keepaliveInterval": 0 // value in milliseconds, 0 = disable
 }

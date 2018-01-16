@@ -13,7 +13,7 @@ var session = require('express-session')({
 })
 var app = express()
 var server = require('http').Server(app)
-var myutil = require('./util')
+//var myutil = require('./util')
 var validator = require('validator')
 var io = require('socket.io')(server, { serveClient: false })
 var socket = require('./socket')
@@ -21,7 +21,7 @@ var expressOptions = require('./expressOptions')
 
 // express
 app.use(session)
-app.use(myutil.basicAuth)
+//app.use(myutil.basicAuth)
 if (config.accesslog) app.use(logger('common'))
 app.disable('x-powered-by')
 
@@ -44,6 +44,8 @@ app.get('/ssh/host/:host?', function (req, res, next) {
       background: req.query.headerBackground || config.header.background
     },
     algorithms: config.algorithms,
+    user: req.query.user,
+    pass: req.query.pass,
     term: (/^(([a-z]|[A-Z]|[0-9]|[!^(){}\-_~])+)?\w$/.test(req.query.sshterm) &&
       req.query.sshterm) || config.ssh.term,
     allowreplay: validator.isBoolean(req.headers.allowreplay + '') || false,
