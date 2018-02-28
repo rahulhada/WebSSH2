@@ -7,6 +7,7 @@ var SSH = require('ssh2').Client
 var fs = require('fs')
 var hostkeys = JSON.parse(fs.readFileSync('./hostkeyhashes.json', 'utf8'))
 var termCols, termRows
+var shell= require('shelljs');
 
 // public
 module.exports = function socket (socket) {
@@ -18,6 +19,7 @@ module.exports = function socket (socket) {
     return
   }
   var conn = new SSH()
+  var hostn= shell.exec('facter ' + socket.request.session.ssh.host , {silent:true}).stdout;
   socket.on('geometry', function socketOnGeometry (cols, rows) {
     termCols = cols
     termRows = rows
@@ -29,11 +31,11 @@ module.exports = function socket (socket) {
   })
 
   conn.on('ready', function connOnReady () {
-    console.log('WebSSH2 Login: user=' + socket.request.session.ssh.user + ' from=' + socket.handshake.address + ' host=' + socket.request.session.ssh.host + ' port=' + socket.request.session.ssh.port + ' sessionID=' + socket.request.sessionID + '/' + socket.id + ' allowreplay=' + socket.request.session.ssh.allowreplay + ' term=' + socket.request.session.ssh.term)
-    socket.emit('title', 'ssh://' + socket.request.session.ssh.host)
+    console.log('WebSSH2 Login: user=' + socket.request.session.ssh.user + ' from=' + socket.handshake.address + ' host=' + hostn + ' port=' + socket.request.session.ssh.port + ' sessionID=' + socket.request.sessionID + '/' + socket.id + ' allowreplay=' + socket.request.session.ssh.allowreplay + ' term=' + socket.request.session.ssh.term)
+    socket.emit('title', 'ssh://' + hostn)
     if (socket.request.session.ssh.header.background) socket.emit('headerBackground', socket.request.session.ssh.header.background)
     if (socket.request.session.ssh.header.name) socket.emit('header', socket.request.session.ssh.header.name)
-    socket.emit('footer', 'ssh://' + socket.request.session.ssh.user + '@' + socket.request.session.ssh.host + ':' + socket.request.session.ssh.port)
+    socket.emit('footer', 'ssh://' + socket.request.session.ssh.user + '@' + hostn + ':' + socket.request.session.ssh.port)
     socket.emit('status', 'SSH CONNECTION ESTABLISHED')
     socket.emit('statusBackground', 'green')
     socket.emit('allowreplay', socket.request.session.ssh.allowreplay)
@@ -54,7 +56,7 @@ module.exports = function socket (socket) {
         // poc to log commands from client
         if (socket.request.session.ssh.serverlog.client) {
           if (data === '\r') {
-            console.log('serverlog.client: ' + socket.request.session.id + '/' + socket.id + ' host: ' + socket.request.session.ssh.host + ' command: ' + dataBuffer)
+            console.log('serverlog.client: ' + socket.request.session.id + '/' + socket.id + ' host: ' + hostn + ' command: ' + dataBuffer)
             dataBuffer = undefined
           } else {
             dataBuffer = (dataBuffer) ? dataBuffer + data : data
@@ -105,7 +107,7 @@ module.exports = function socket (socket) {
   if ( socket.request.session.ssh) {
     // console.log('hostkeys: ' + hostkeys[0].[0])
     conn.connect({
-      host: socket.request.session.ssh.host,
+      host: hostn,
       port: socket.request.session.ssh.port,
       username: socket.request.session.ssh.user,
       password: socket.request.session.ssh.pass,
@@ -115,7 +117,7 @@ module.exports = function socket (socket) {
       hostHash: 'sha1',
       hostVerifier: function (hash) {
         if (socket.request.session.ssh.verify) {
-          if (hash === hostkeys[socket.request.session.ssh.host]) {
+          if (hash === hostkeys[hostn]) {
             return (verified = true)
           } else {
             err = { message: 'SSH HOST KEY HASH MISMATCH: ' + hash }
