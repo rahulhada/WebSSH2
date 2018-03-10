@@ -1,9 +1,4 @@
-// index.js
-/*
- * WebSSH2 - Web to SSH2 gateway
- * Bill Church - https://github.com/billchurch/WebSSH2 - May 2017
- *
- */
+#!/usr/bin/env node
 'use strict'
 
 var config = require('./app').config

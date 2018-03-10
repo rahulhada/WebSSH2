@@ -37,7 +37,8 @@
     "socket.io": "^2.0.0",
     "ssh2": "^0.5.5",
     "validator": "^9.0.0",
-    "shelljs": "^0.8.0"
+    "shelljs": "^0.8.0",
+    "pm2": "^2.10.0"
   },
   "scripts": {
     "start": "node index",
@@ -64,5 +65,12 @@
       "public/webssh2.js",
       "public/src/js/*.js"
     ]
+  },
+  "node_deb": {
+    "init": "none",
+    "version": "1.0.3",
+    "entrypoints": {
+      "cli": "index.js"
+    }
   }
 }
