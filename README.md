@@ -1,9 +1,12 @@
-# WebSSH2 [![GitHub version](https://badge.fury.io/gh/billchurch%2Fwebssh2.svg)](https://badge.fury.io/gh/billchurch%2Fwebssh2) [![Build Status](https://travis-ci.org/billchurch/WebSSH2.svg?branch=master)](https://travis-ci.org/billchurch/WebSSH2) [![Known Vulnerabilities](https://snyk.io/test/github/billchurch/webssh2/badge.svg)](https://snyk.io/test/github/billchurch/webssh2) [![bitHound Overall Score](https://www.bithound.io/github/billchurch/WebSSH2/badges/score.svg)](https://www.bithound.io/github/billchurch/WebSSH2) [![bitHound Dependencies](https://www.bithound.io/github/billchurch/WebSSH2/badges/dependencies.svg)](https://www.bithound.io/github/billchurch/WebSSH2/master/dependencies/npm) [![NSP Status](https://nodesecurity.io/orgs/billchurch/projects/b0a0d9df-1340-43ef-9736-ef983c057764/badge)](https://nodesecurity.io/orgs/billchurch/projects/b0a0d9df-1340-43ef-9736-ef983c057764)
+# WebSSH2
+[![GitHub version](https://badge.fury.io/gh/billchurch%2Fwebssh2.svg)](https://badge.fury.io/gh/billchurch%2Fwebssh2) [![Build Status](https://travis-ci.org/billchurch/WebSSH2.svg?branch=master)](https://travis-ci.org/billchurch/WebSSH2) [![Known Vulnerabilities](https://snyk.io/test/github/billchurch/webssh2/badge.svg)](https://snyk.io/test/github/billchurch/webssh2) [![bitHound Overall Score](https://www.bithound.io/github/billchurch/WebSSH2/badges/score.svg)](https://www.bithound.io/github/billchurch/WebSSH2) [![bitHound Dependencies](https://www.bithound.io/github/billchurch/WebSSH2/badges/dependencies.svg)](https://www.bithound.io/github/billchurch/WebSSH2/master/dependencies/npm) [![NSP Status](https://nodesecurity.io/orgs/billchurch/projects/b0a0d9df-1340-43ef-9736-ef983c057764/badge)](https://nodesecurity.io/orgs/billchurch/projects/b0a0d9df-1340-43ef-9736-ef983c057764) [![Greenkeeper badge](https://badges.greenkeeper.io/billchurch/WebSSH2.svg)](https://greenkeeper.io/)
+
+
 Web SSH Client using ssh2, socket.io, xterm.js, and express
 
 A bare bones example of an HTML5 web-based terminal emulator and SSH client. We use SSH2 as a client on a host to proxy a Websocket / Socket.io connection to a SSH2 server.
 
-<img width="1044" alt="Screenshot 2017-03-23 18.13.59" src="https://cloud.githubusercontent.com/assets/1668075/24272639/8ad4fef0-0ff4-11e7-8dd0-72b26605e467.png">
+<img width="600" height="340" alt="WebSSH2 v0.2.0 demo" src="https://github.com/billchurch/WebSSH2/raw/master/screenshots/demo-800.gif">
 
 # Instructions
 To install:
@@ -53,9 +56,19 @@ docker run --name webssh2 -d -p 2222:2222 webssh2
 
 * **readyTimeout=** - _integer_ - How long (in milliseconds) to wait for the SSH handshake to complete. **Default:** 20000. **Enforced Values:** Min: 1, Max: 300000
 
+* **cursorBlink** - _boolean_ - Cursor blinks (true), does not (false) **Default:** true.
+
+* **scrollback** - _integer_ - Lines in the scrollback buffer. **Default:** 10000. **Enforced Values:** Min: 1, Max: 200000
+
+* **tabStopWidth** - _integer_ - Tab stops at _n_ characters **Default:** 8. **Enforced Values:** Min: 1, Max: 100
+
+* **bellStyle** - _string_ - Style of terminal bell: ("sound"|"none"). **Default:** "sound". **Enforced Values:** "sound", "none"
+
 ## Headers
 
 * **allowreplay** - _boolean_ - Allow use of password replay feature, example `allowreplay: true`
+
+* **mrhsession** - _string_ - Can be used to pass APM session for event correlation `mrhsession: abc123`
 
 ## Config File Options
 `config.json` contains several options which may be specified to customize to your needs, vs editing the javascript directly. This is JSON format so mind your spacing, brackets, etc...
@@ -76,7 +89,17 @@ docker run --name webssh2 -d -p 2222:2222 webssh2
 
 * **ssh.readyTimeout** - _integer_ - How long (in milliseconds) to wait for the SSH handshake to complete. **Default:** 20000.
 
-* **useminified** - _boolean_ - Choose between ./public/client-full.htm (false/non-minified) or ./public/client-min.htm (true/minified js), defaults to false (non-minified version)
+* **ssh.keepaliveInterval** - _integer_ - How often (in milliseconds) to send SSH-level keepalive packets to the server (in a similar way as OpenSSH's ServerAliveInterval config option). Set to 0 to disable. **Default:** 120000.
+
+* **ssh.keepaliveCountMax** - _integer_ - How many consecutive, unanswered SSH-level keepalive packets that can be sent to the server before disconnection (similar to OpenSSH's ServerAliveCountMax config option). **Default:** 10.
+
+* **terminal.cursorBlink** - _boolean_ - Cursor blinks (true), does not (false) **Default:** true.
+
+* **terminal.scrollback** - _integer_ - Lines in the scrollback buffer. **Default:** 10000.
+
+* **terminal.tabStopWidth** - _integer_ - Tab stops at _n_ characters **Default:** 8.
+
+* **terminal.bellStyle** - _string_ - Style of terminal bell: (sound|none). **Default:** "sound".
 
 * **header.text** - _string_ - Specify header text, defaults to `My Header` but may also be set to `null`. When set to `null` no header bar will be displayed on the client.
 
@@ -191,6 +214,4 @@ Clicking `Start logging` on the status bar will log all data to the client. A `D
 http://localhost:2222/ssh/host/192.168.1.1?port=2244&header=My%20Header&color=red
 
 # Tips
-* If you want to add custom JavaScript to the browser client you can either modify `./public/client-(full|min).html` and add a **<script>** element or check out `Gulpfile.js` and add your custom javascript file to the concat task
-* BIG-IP Acess Policy Manager (APM) doesn't always care for minified javascript when run in portal mode. Be sure to Set `useminified` option in `config.json` to `false` for these environments
-* Set `useminified` option in `config.json` to `true` to utilize minified javascript
+* If you want to add custom JavaScript to the browser client you can either modify `./src/client.html` and add a **<script>** element, modify `./src/index.js` directly, or check out `webpack.*.js` and add your custom javascript file to a task there (best option).

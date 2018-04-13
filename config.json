@@ -11,9 +11,16 @@
     "host": null,
     "port": null,
     "term": "xterm-color",
-    "readyTimeout": 20000
+    "readyTimeout": 20000,
+    "keepaliveInterval": 120000,
+    "keepaliveCountMax": 10
   },
-  "useminified": false,
+  "terminal": {
+    "cursorBlink": true,
+    "scrollback": 10000,
+    "tabStopWidth": 8,
+    "bellStyle": "sound"
+  },
   "header": {
     "text": null,
     "background": "green"
@@ -41,12 +48,12 @@
       "aes128-gcm@openssh.com",
       "aes256-gcm",
       "aes256-gcm@openssh.com",
-      "aes256-cbc" // for some legacy systems
+      "aes256-cbc"
     ],
     "hmac": [
       "hmac-sha2-256",
       "hmac-sha2-512",
-      "hmac-sha1" // for some legacy systems
+      "hmac-sha1"
     ],
     "compress": [
       "none",

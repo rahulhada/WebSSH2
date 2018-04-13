@@ -1,11 +1,13 @@
 #!/usr/bin/env node
 'use strict'
 
-var config = require('./app').config
-var server = require('./app').server
+var config = require('./server/app').config
+var server = require('./server/app').server
 
 server.listen({ host: config.listen.ip, port: config.listen.port
 })
+
+console.log('WebSSH2 service listening on ' + config.listen.ip + ':' + config.listen.port)
 
 server.on('error', function (err) {
   if (err.code === 'EADDRINUSE') {

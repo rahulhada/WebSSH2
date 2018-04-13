@@ -1,3 +1,12 @@
+#Docs
+docs
+
+ssl/*
+
+bigip/*
+
+config.json
+
 # Logs
 logs
 *.log
